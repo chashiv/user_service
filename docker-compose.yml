@@ -66,7 +66,7 @@ services:
       # `docker run -e DB_DRIVER=... -e DB_URL=...` (see README).
       DB_DRIVER: postgres
       DB_URL: postgres://${POSTGRES_USER:-userservice}:${POSTGRES_PASSWORD:-userservice}@postgres:5432/${POSTGRES_DB:-userservice}
-      SESSION_STORE: redis
+      SESSION_STORE: db
       REDIS_URL: redis://redis:6379
 
       # Auto-create tables on first boot. Flip to "false" once you adopt migrations.
@@ -77,7 +77,7 @@ services:
       SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-false}
 
       ENABLED_PROVIDERS: ${ENABLED_PROVIDERS:-google}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-smoke-test.apps.googleusercontent.com}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-38407264872-8ttjqp56t7pmljom3i1n4hea33vspbso.apps.googleusercontent.com}
     volumes:
       # Persist the sqlite fallback if you ever switch DB_DRIVER for the image.
       - app-data:/app/data

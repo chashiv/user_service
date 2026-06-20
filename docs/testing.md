@@ -5,6 +5,9 @@ use the steps below to exercise every endpoint.
 
 All examples assume `http://localhost:4000`. Adjust if you changed `PORT`.
 
+> 💡 For the **short version** of the auth flow (just sequence + per-call summary), see [`flow.md`](flow.md).
+> For ready-to-import requests, see [`postman/`](postman/).
+
 ---
 
 ## 0. Pre-flight: is the stack up?

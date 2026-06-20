@@ -17,7 +17,9 @@ Deeper docs live in [`docs/`](docs/):
 
 - [`docs/architecture.md`](docs/architecture.md) — module map, dependency graph, key design choices.
 - [`docs/adding-a-provider.md`](docs/adding-a-provider.md) — step-by-step for new SSO providers.
+- [`docs/flow.md`](docs/flow.md) — short auth flow walkthrough (per-request sequence).
 - [`docs/testing.md`](docs/testing.md) — browser/curl/Postman cheat sheet for every endpoint.
+- [`docs/postman/`](docs/postman/) — importable Postman collection + environment.
 - [`docs/deployment.md`](docs/deployment.md) — production checklist, migrations, scaling.
 
 ---
@@ -124,7 +126,10 @@ user_service/
 ├── docs/                                Architecture, deploy, adding providers
 │   ├── architecture.md
 │   ├── adding-a-provider.md
-│   └── deployment.md
+│   ├── flow.md
+│   ├── testing.md
+│   ├── deployment.md
+│   └── postman/                         Postman collection + environment
 ├── docker/
 │   └── healthcheck.js                   Container HEALTHCHECK script
 ├── test/                                e2e tests live here (none wired yet)

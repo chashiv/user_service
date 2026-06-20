@@ -1,0 +1,102 @@
+{
+  "info": {
+    "_postman_id": "f5a3c2b8-7e9d-4a1c-b6d0-1a2b3c4d5e6f",
+    "name": "user_service",
+    "description": "Postman collection for the user_service NestJS auth backend. Uses Postman's built-in cookie jar — login sets a `uid_session` cookie that's auto-attached to /api/me and /auth/logout.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "userId", "value": "", "type": "string" },
+    { "key": "sessionExpiresAt", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] },
+        "description": "Liveness — process is up."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Ready",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/ready", "host": ["{{baseUrl}}"], "path": ["ready"] },
+        "description": "Readiness — DB + session store + enabled providers."
+      },
+      "response": []
+    },
+    {
+      "name": "3. List providers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/auth/providers", "host": ["{{baseUrl}}"], "path": ["auth", "providers"] },
+        "description": "Returns `{ enabled: ['google', ...] }`."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Google login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 with user + session', () => {",
+              "  pm.response.to.have.status(200);",
+              "  const j = pm.response.json();",
+              "  pm.expect(j.user.id).to.be.a('string');",
+              "  pm.expect(j.session.expiresAt).to.be.a('string');",
+              "  pm.collectionVariables.set('userId', j.user.id);",
+              "  pm.collectionVariables.set('sessionExpiresAt', j.session.expiresAt);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"{{googleIdToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/google/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "google", "login"]
+        },
+        "description": "Exchange a Google ID token for a backend session.\n\nGet a real `googleIdToken` from https://developers.google.com/oauthplayground (use **your own** client ID + secret — must match `GOOGLE_CLIENT_ID` in the backend `.env`).\n\nOn success the response sets a `uid_session` cookie that Postman will reuse on /api/me and /auth/logout."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Current user (/api/me)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/me", "host": ["{{baseUrl}}"], "path": ["api", "me"] },
+        "description": "Returns `{ user, identities[] }` for the cookie holder. 401 if no/expired session."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"] },
+        "description": "Deletes the session from the store and clears the `uid_session` cookie."
+      },
+      "response": []
+    }
+  ]
+}
