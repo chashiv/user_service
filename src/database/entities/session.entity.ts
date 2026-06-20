@@ -22,10 +22,10 @@ export class Session {
   @JoinColumn({ name: 'user_id' })
   user?: User;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn()
   createdAt!: Date;
 
   @Index()
-  @Column({ type: 'datetime', name: 'expires_at' })
+  @Column({ name: 'expires_at' })
   expiresAt!: Date;
 }

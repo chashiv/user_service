@@ -36,6 +36,6 @@ export class UserIdentity {
   @Column({ type: 'text', nullable: true, name: 'raw_profile' })
   rawProfile!: string | null;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn()
   createdAt!: Date;
 }

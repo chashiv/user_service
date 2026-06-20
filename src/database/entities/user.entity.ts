@@ -25,10 +25,10 @@ export class User {
   @Column({ type: 'text', nullable: true })
   picture!: string | null;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn()
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: 'datetime' })
+  @UpdateDateColumn()
   updatedAt!: Date;
 
   @OneToMany(() => UserIdentity, (i) => i.user)
