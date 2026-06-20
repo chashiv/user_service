@@ -17,6 +17,7 @@ Deeper docs live in [`docs/`](docs/):
 
 - [`docs/architecture.md`](docs/architecture.md) — module map, dependency graph, key design choices.
 - [`docs/adding-a-provider.md`](docs/adding-a-provider.md) — step-by-step for new SSO providers.
+- [`docs/testing.md`](docs/testing.md) — browser/curl/Postman cheat sheet for every endpoint.
 - [`docs/deployment.md`](docs/deployment.md) — production checklist, migrations, scaling.
 
 ---
