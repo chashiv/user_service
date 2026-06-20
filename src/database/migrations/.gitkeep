@@ -1,0 +1,9 @@
+# TypeORM migration files go here.
+#
+# Generate a new one:
+#   npx typeorm migration:generate -d <data-source> src/database/migrations/<name>
+#
+# Run pending migrations:
+#   npx typeorm migration:run -d <data-source>
+#
+# Keep this directory tracked even when empty.

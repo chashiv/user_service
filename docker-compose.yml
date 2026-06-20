@@ -1,0 +1,87 @@
+# Bring up the full stack:    docker compose up --build
+# Tail just the app logs:     docker compose logs -f app
+# Stop & wipe volumes:        docker compose down -v
+#
+# Override any value from a .env file next to this compose file, e.g.:
+#   GOOGLE_CLIENT_ID=123-abc.apps.googleusercontent.com
+#   CORS_ORIGINS=http://localhost:5500
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-userservice}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-userservice}
+      POSTGRES_DB: ${POSTGRES_DB:-userservice}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-userservice} -d ${POSTGRES_DB:-userservice}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 3s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: user-service:local
+    restart: unless-stopped
+    init: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${PORT:-4000}:4000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 4000
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5500,http://127.0.0.1:5500}
+
+      # Use the bundled Postgres service by default.
+      DB_DRIVER: ${DB_DRIVER:-postgres}
+      DB_URL: ${DB_URL:-postgres://userservice:userservice@postgres:5432/userservice}
+      # Auto-create tables on first boot. Flip to "false" once you adopt migrations.
+      DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-true}
+
+      # Use the bundled Redis service by default.
+      SESSION_STORE: ${SESSION_STORE:-redis}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-uid_session}
+      SESSION_TTL_SECONDS: ${SESSION_TTL_SECONDS:-604800}
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-false}
+
+      ENABLED_PROVIDERS: ${ENABLED_PROVIDERS:-google}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com}
+    volumes:
+      # Persist the sqlite fallback if the user switches DB_DRIVER=sqlite.
+      - app-data:/app/data
+
+volumes:
+  postgres-data:
+  redis-data:
+  app-data:

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+data/
+*.db
+*.db-journal
+.env
+.env.local
+*.local
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+coverage/
+.nyc_output/
+*.tsbuildinfo

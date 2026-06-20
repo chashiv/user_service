@@ -1,0 +1,27 @@
+# Build artefacts
+node_modules
+dist
+*.tsbuildinfo
+
+# Local data / secrets
+data
+.env
+.env.local
+*.local
+
+# VCS / editor
+.git
+.gitignore
+.vscode
+.idea
+
+# Logs / OS junk
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Docs / scripts not needed at runtime
+README.md
+docker-compose.yml
+Dockerfile
+.dockerignore
